@@ -1,0 +1,96 @@
+# OilFox
+
+## Überblick
+
+Diese Integration bringt die **OilFox**-Sensoren deines Kontos in Gladys. Ein OilFox (von FoxInsights GmbH) ist ein WLAN-Ultraschallsensor, der oben auf einem Tank sitzt: Heizöl, aber auch Pellets (in kg), Diesel… Die Integration liest Füllstand, Restmenge, Reichweite in Tagen und Batterie über die offizielle [FoxInsights Customer API](https://github.com/foxinsights/customer-api), mit der E-Mail-Adresse und dem Passwort deiner **FoxMobile**-App. Sie liest nur. Sie ist nicht mit FoxInsights verbunden.
+
+- Ein Gerät pro OilFox-Sensor: Füllstand, Menge, Reichweite, Batterie und Messstatus.
+- Zwei Dashboard-Widgets: alle Tanks auf einen Blick, die Probleme zuerst; ein Tank mit seinem Füllstand der letzten 90 Tage, dem geschätzten Leer-Datum und dem Verbrauch pro Tag.
+- Szenenauslöser: neue Messung, Befüllung erkannt, Messproblem, Messung wieder in Ordnung, Messung verspätet, Messungen wieder da, Zugriff verweigert.
+- Szenenaktion: die Werte eines Tanks (Füllstand, Menge, Leer-Datum, Verbrauch pro Tag, ein Satz…).
+
+Transport: Cloud. E-Mail-Adresse und Passwort gehen zur Anmeldung an OilFox (`api.oilfox.io`); die Messungen deiner Tanks kommen aus der OilFox-Cloud, die sie per WLAN vom Sensor erhält.
+
+## Voraussetzungen
+
+- Gladys Assistant 5.3.0 oder neuer.
+- Ein in der FoxMobile-App eingerichteter OilFox-Sensor mit seinem Tank (Form und Größe): ohne sie liefert OilFox keinen Füllstand („Tankeinstellungen fehlen“).
+- E-Mail-Adresse und Passwort des FoxMobile-Kontos. Nur deine eigenen Sensoren dürfen gelesen werden: Die Fair-Use-Regeln von FoxInsights verbieten es, Geräte anderer Personen zu überwachen.
+
+Aktualität der Daten: Ein OilFox misst seinen Tank **etwa einmal am Tag**. FoxInsights betrachtet eine Abfrage pro Stunde als faire Nutzung (darüber hinaus antwortet es mit HTTP 429). Die Integration liest das Konto **einmal pro Stunde**, dazu einmal 15 Minuten nach jeder von OilFox geplanten Messung (immer mindestens 15 Minuten nach der vorigen Abfrage): Ein neuer Füllstand kommt schnell an, ohne mehr abzufragen.
+
+## Konfiguration
+
+| Feld              | Bedeutung                                                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| E-Mail-Adresse    | Die E-Mail deines FoxMobile-Kontos                                                                                              |
+| Passwort          | Sein Passwort (ein Geheimnis: nie wieder angezeigt, nie in die Logs noch nach `/data` geschrieben)                              |
+| Sprache der Texte | Funktionsnamen, Messstatus, Szenentexte und Fehler; automatisch folgt der Sprache des zuletzt angezeigten Widgets (en/fr/de/es) |
+
+Schaltflächen:
+
+- **Verbindung testen** meldet sich bei OilFox an, liest die Sensoren und listet ihre Hardware-IDs auf.
+- **Diagnose** schreibt den Zustand der Integration in ihre Logs, ohne Passwort, Token und E-Mail-Adresse.
+
+Das Zugriffstoken (15 Minuten gültig) wird mit einem einmal verwendbaren Refresh-Token erneuert. Beide bleiben im Speicher: Nach einem Neustart meldet sich die Integration erneut an.
+
+## Verwendung
+
+### Geräte
+
+Öffne nach der Konfiguration die **Erkennung**: Jeder OilFox-Sensor wird als „OilFox <Hardware-ID>“ angeboten (die API liefert keinen Namen). Füge ihn hinzu und benenne ihn dann in Gladys um („Heizöltank“, „Pelletsilo“…): Widgets und Szenen verwenden den Namen, den du ihm gibst.
+
+| Funktion   | Kategorie / Typ                           | Einheit |
+| ---------- | ----------------------------------------- | ------- |
+| Füllstand  | `level-sensor` / `liquid-level-percent`   | %       |
+| Menge      | `volume-sensor` / `integer`               | L       |
+| Menge (kg) | `counter-sensor` / `integer` (Tank in kg) | —       |
+| Reichweite | `duration` / `integer`                    | Tage    |
+| Batterie   | `battery` / `integer`                     | %       |
+| Messstatus | `text` / `text`                           | —       |
+
+Alle Funktionen sind schreibgeschützt und behalten ihren Verlauf. Bei einem Tank in kg (Pellets) ist die Menge ein Zähler ohne Einheit namens „Menge (kg)“: Gladys hat keine Kilogramm-Einheit. Die Reichweite ist die Schätzung von OilFox, wie viele Tage es noch dauert, bis der Tank leer ist. OilFox gibt die Batterie als Stufe an: Die Integration wandelt sie in einen **ungefähren** Prozentwert um (Voll 100, Gut 75, Mittel 50, Schwach 15, Kritisch 5), damit die Batteriewarnungen von Gladys funktionieren. Der Messstatus ist „OK“ oder das Problem, in der Sprache der Konfiguration.
+
+Ein Wert, den OilFox weglässt (zum Beispiel kein Füllstand, wenn die Messung ein Problem hat), wird nicht veröffentlicht: Der letzte Wert bleibt. Unveränderte Werte werden alle 6 Stunden erneut gesendet, außer bei einem verspäteten Sensor: Gladys zeigt seine Werte dann als veraltet.
+
+### Dashboard-Widgets
+
+![Die beiden Widgets: OilFox-Tanks mit den Anzeigen eines Pelletsilos und eines Heizöltanks und einem Garagentank mit Fehler, und das Widget OilFox-Tank des Heizöltanks mit seinem Füllstand der letzten 90 Tage und einer Befüllung Mitte September (generierte Illustration, kein Screenshot)](https://raw.githubusercontent.com/William-De71/gladys-oilfox/main/docs/assets/widgets.de.png)
+
+- **OilFox-Tanks**: eine Anzeige pro Tank mit bekanntem Füllstand (höchstens 6), dann eine Karte pro Tank (höchstens 8), die Probleme zuerst, dann die verspäteten Sensoren, dann die schwachen Batterien, mit Menge, Reichweite und Alter der letzten Messung.
+- **OilFox-Tank**: ein Tank (in den Einstellungen des Widgets wählen; standardmäßig der erste): Füllstandsanzeige, Menge, Reichweite, Batterie, der Füllstand der letzten 90 Tage, der Messstatus, die letzte und die nächste Messung, das geschätzte Leer-Datum und der durchschnittliche Verbrauch pro Tag über 30 Tage (die Abnahmen zwischen zwei Messungen, ohne Befüllungen). Das Diagramm stammt aus den Punkten, die die Integration in `/data` aufbewahrt (etwa ein Jahr), ohne zusätzliche Anfrage: Es erscheint nach zwei Messungen, der Verbrauch pro Tag nach zwei Tagen.
+
+### Szenen
+
+Auslöser (einmal pro Änderung, nie bei der ersten Abfrage, nie wegen einer Szenenaktion), nach Tank filterbar:
+
+- **Neue Messung**: OilFox hat den Tank gemessen (etwa einmal am Tag); Variablen: Füllstand, Menge, Einheit, Reichweite, Batteriestufe, seit der vorigen Messung verbrauchte Menge, Zeitpunkt der Messung.
+- **Befüllung erkannt**: Der Füllstand ist zwischen zwei Messungen um 5 Punkte oder mehr gestiegen; Variablen: Füllstand vorher und nachher, hinzugekommene Menge.
+- **Messproblem** (Filter: Probleme): Noch keine Messung, Fehlerhafte Messung, Kein Füllstand erkannt, Fehlerhafte Messung (Sensor), Tankeinstellungen fehlen, Falsche Tankeinstellungen, Gemessener Abstand zu klein, Tank voll (über dem Maximum), Unplausibler Füllstand; Variablen: Code und Bezeichnung.
+- **Messung wieder in Ordnung**: Das Problem ist verschwunden.
+- **Messung verspätet** / **Messungen wieder da**: Die von OilFox geplante Messung ist 24 Stunden überfällig (Variablen: erwarteter Zeitpunkt, Stunden Verspätung), dann wieder Messungen.
+- **Zugriff verweigert**: OilFox lehnt E-Mail-Adresse, Passwort oder Tokens ab (Grund: `refused`, `unknown_account` oder `token`, und eine Meldung).
+
+Ein Vergleich wie „Füllstand unter 20 %“ ist kein Auslöser der Integration: Verwende eine Gerätebedingung von Gladys auf der Funktion Füllstand, mit deinem eigenen Schwellenwert.
+
+Aktion:
+
+- **Werte eines Tanks**: Name, Füllstand, Menge, Einheit, Reichweite, geschätztes Leer-Datum (JJJJ-MM-TT), Verbrauch pro Tag (Durchschnitt über 30 Tage), Batteriestufe und ungefährer Prozentwert, Messproblem (Code, leer wenn keines, und Bezeichnung), letzte und nächste Messung, ob sie verspätet ist, und ein Satz (`summary`), aus der letzten Abfrage (keine Anfrage).
+
+Beispiele:
+
+- Wenn der **Füllstand** des Heizöltanks unter 20 % fällt (Gerätebedingung) → „Zeit, Heizöl zu bestellen“ senden.
+- Wenn **OilFox: Befüllung erkannt** → „{{triggerEvent.data.tank_name}}: +{{triggerEvent.data.added_quantity}} {{triggerEvent.data.unit}} geliefert“ senden.
+- Jeden Montag um 8:00 → **OilFox: Werte eines Tanks** → seine `summary` senden.
+- Wenn **OilFox: Messproblem** → „{{triggerEvent.data.tank_name}}: {{triggerEvent.data.error_label}}“ senden.
+
+## Fehlerbehebung
+
+- **„OilFox kennt kein Konto mit dieser E-Mail-Adresse“**: OilFox hat die Anmeldung mit 404 beantwortet; prüfe die E-Mail der FoxMobile-App.
+- **„OilFox hat die Anmeldung abgelehnt“**: Prüfe das Passwort in der FoxMobile-App. Ein abgelehntes Konto wird jede Stunde erneut versucht, oder sofort mit **Verbindung testen**.
+- **„Tankeinstellungen fehlen“**: Form und Größe des Tanks sind nicht eingetragen: Richte den Tank in der FoxMobile-App ein.
+- **Messung verspätet**: Der Sensor hat einen Tag nach dem geplanten Zeitpunkt noch nicht gemessen: Prüfe sein WLAN und seine Batterie.
+- **Abfragen pausiert**: Nach einem HTTP 429 wartet die Integration eine Stunde; nach einem Serverfehler oder ohne Antwort 10 Minuten, dann doppelt so lange bis zu 2 Stunden.
+- **Ein neuer Wert kommt spät an**: Er erreicht Gladys bis zu etwa einer Stunde, nachdem die Messung in der App erscheint.
+- Bei einem Problem gib die Versionen von Gladys und der Integration an, die Meldung von **Verbindung testen** und die Zeilen „OilFox diagnostic“, die **Diagnose** in die Logs der Integration schreibt (`DEBUG=gladys-integration-sdk` fügt die Logs des SDK hinzu). Füge nie dein Passwort ein.
+- Grenzen: noch nie mit einem echten OilFox-Konto getestet (geschrieben nach der offiziellen Dokumentation und echten Antworten der API: unbekanntes Konto 404, fehlendes Feld 400, ungültiges Refresh-Token 401, falsches Token 401); ein Konto pro Integration; keine US-Gallonen.

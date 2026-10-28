@@ -1,0 +1,32 @@
+{
+  "items": [
+    {
+      "hwid": "ON0987654321",
+      "currentMeteringAt": "2026-10-28T05:35:50.202821Z",
+      "nextMeteringAt": "2026-10-29T05:35:50.202821Z",
+      "daysReach": 93,
+      "batteryLevel": "FULL",
+      "fillLevelPercent": 43,
+      "fillLevelQuantity": 1643,
+      "quantityUnit": "L"
+    },
+    {
+      "hwid": "ON0123456789",
+      "currentMeteringAt": "2026-10-28T04:46:48.348650Z",
+      "nextMeteringAt": "2026-10-29T04:46:48.348650Z",
+      "validationError": "MISSING_STORAGE_CONFIG",
+      "batteryLevel": "WARNING",
+      "quantityUnit": "L"
+    },
+    {
+      "hwid": "ON0555000111",
+      "currentMeteringAt": "2026-10-28T06:10:00Z",
+      "nextMeteringAt": "2026-10-29T06:10:00Z",
+      "daysReach": 41,
+      "batteryLevel": "GOOD",
+      "fillLevelPercent": 28,
+      "fillLevelQuantity": 840,
+      "quantityUnit": "kg"
+    }
+  ]
+}

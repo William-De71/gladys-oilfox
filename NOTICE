@@ -1,0 +1,13 @@
+Gladys OilFox integration
+Copyright 2026 William Deren
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It reads the OilFox tank sensors of the user's own account (FoxMobile app)
+through the official FoxInsights Customer API
+(https://github.com/foxinsights/customer-api, docs/v1), with the e-mail address
+and the password of that account, within the fair use policy of FoxInsights
+(one reading an hour). This integration is not affiliated with nor endorsed by
+FoxInsights GmbH. OilFox is a trademark of its owner. The endpoints and fields
+follow the published API documentation and the answers of the live API; the
+example code of that repository (SSPL) was not used: no code is taken from it.

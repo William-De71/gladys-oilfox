@@ -1,0 +1,1151 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "OilFox",
+  "description": {
+    "en": "OilFox tank sensors via the official API: fill level, quantity, days of reach, refills.",
+    "fr": "Capteurs de cuve OilFox par l’API officielle : niveau, quantité, autonomie, remplissages.",
+    "de": "OilFox-Tanksensoren über die offizielle API: Füllstand, Menge, Reichweite, Befüllungen.",
+    "es": "Sensores de depósito OilFox por la API oficial: nivel, cantidad, autonomía, rellenos."
+  },
+  "version": "0.1.0",
+  "docker_image": "ghcr.io/william-de71/gladys-oilfox:0.1.0",
+  "gladys_version": ">=5.3.0",
+  "categories": ["energy", "climate"],
+  "keywords": [
+    "OilFox",
+    "FoxInsights",
+    "FoxMobile",
+    "fioul",
+    "Heizöl",
+    "heating oil",
+    "mazout",
+    "cuve",
+    "pellets",
+    "gasóleo"
+  ],
+  "cover_image": "https://raw.githubusercontent.com/William-De71/gladys-oilfox/main/cover.jpg",
+  "transports": ["cloud"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "OilFox account",
+        "fr": "Compte OilFox",
+        "de": "OilFox-Konto",
+        "es": "Cuenta OilFox"
+      },
+      "description": {
+        "en": "Enter the e-mail address and the password you use in the FoxMobile app. The integration signs in to the official FoxInsights Customer API (api.oilfox.io) and only reads: the measurements travel through the OilFox cloud. Only your own sensors may be read (fair use policy of FoxInsights). Not affiliated with FoxInsights.",
+        "fr": "Saisissez l’adresse e-mail et le mot de passe de l’application FoxMobile. L’intégration se connecte à l’API officielle FoxInsights Customer API (api.oilfox.io) et ne fait que lire : les mesures passent par le cloud OilFox. Seuls vos propres capteurs peuvent être lus (règle d’usage loyal de FoxInsights). Non affiliée à FoxInsights.",
+        "de": "Gib die E-Mail-Adresse und das Passwort der FoxMobile-App ein. Die Integration meldet sich bei der offiziellen FoxInsights Customer API (api.oilfox.io) an und liest nur: Die Messwerte laufen über die OilFox-Cloud. Nur deine eigenen Sensoren dürfen gelesen werden (Fair-Use-Regel von FoxInsights). Nicht mit FoxInsights verbunden.",
+        "es": "Introduzca la dirección de correo y la contraseña de la aplicación FoxMobile. La integración se conecta a la API oficial FoxInsights Customer API (api.oilfox.io) y solo lee: las mediciones pasan por la nube de OilFox. Solo se pueden leer sus propios sensores (política de uso razonable de FoxInsights). No afiliada a FoxInsights."
+      },
+      "links": [
+        {
+          "url": "https://github.com/foxinsights/customer-api",
+          "label": {
+            "en": "OilFox API documentation",
+            "fr": "Documentation de l’API OilFox",
+            "de": "Dokumentation der OilFox-API",
+            "es": "Documentación de la API OilFox"
+          }
+        }
+      ]
+    },
+    {
+      "key": "email",
+      "type": "string",
+      "required": true,
+      "label": {
+        "en": "E-mail address",
+        "fr": "Adresse e-mail",
+        "de": "E-Mail-Adresse",
+        "es": "Dirección de correo"
+      },
+      "placeholder": {
+        "en": "The e-mail of your FoxMobile account",
+        "fr": "L’e-mail de votre compte FoxMobile",
+        "de": "Die E-Mail deines FoxMobile-Kontos",
+        "es": "El correo de su cuenta FoxMobile"
+      }
+    },
+    {
+      "key": "password",
+      "type": "secret",
+      "required": true,
+      "label": {
+        "en": "Password",
+        "fr": "Mot de passe",
+        "de": "Passwort",
+        "es": "Contraseña"
+      },
+      "placeholder": {
+        "en": "The password of your FoxMobile account",
+        "fr": "Le mot de passe de votre compte FoxMobile",
+        "de": "Das Passwort deines FoxMobile-Kontos",
+        "es": "La contraseña de su cuenta FoxMobile"
+      }
+    },
+    {
+      "key": "readings",
+      "type": "section",
+      "label": {
+        "en": "Readings",
+        "fr": "Lectures",
+        "de": "Abfragen",
+        "es": "Lecturas"
+      },
+      "description": {
+        "en": "An OilFox measures its tank about once a day. The integration reads the account once an hour (the fair use of FoxInsights), and once more 15 minutes after each planned measurement.",
+        "fr": "Un OilFox mesure sa cuve environ une fois par jour. L’intégration lit le compte une fois par heure (l’usage loyal de FoxInsights), et une fois de plus 15 minutes après chaque mesure prévue.",
+        "de": "Ein OilFox misst seinen Tank etwa einmal am Tag. Die Integration liest das Konto einmal pro Stunde (Fair Use von FoxInsights) und noch einmal 15 Minuten nach jeder geplanten Messung.",
+        "es": "Un OilFox mide su depósito aproximadamente una vez al día. La integración lee la cuenta una vez por hora (el uso razonable de FoxInsights), y una vez más 15 minutos después de cada medición prevista."
+      }
+    },
+    {
+      "key": "language",
+      "type": "select",
+      "default": "auto",
+      "label": {
+        "en": "Language of the texts",
+        "fr": "Langue des textes",
+        "de": "Sprache der Texte",
+        "es": "Idioma de los textos"
+      },
+      "description": {
+        "en": "Feature names, measurement state, scene texts and errors. Automatic: the language of the last widget shown.",
+        "fr": "Noms des fonctionnalités, état de la mesure, textes des scènes et erreurs. Automatique : la langue du dernier widget affiché.",
+        "de": "Namen der Funktionen, Messstatus, Szenentexte und Fehler. Automatisch: die Sprache des zuletzt angezeigten Widgets.",
+        "es": "Nombres de las funciones, estado de la medición, textos de escenas y errores. Automático: el idioma del último widget mostrado."
+      },
+      "options": [
+        {
+          "value": "auto",
+          "label": {
+            "en": "Automatic",
+            "fr": "Automatique",
+            "de": "Automatisch",
+            "es": "Automático"
+          }
+        },
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "English",
+            "de": "English",
+            "es": "English"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "Français",
+            "fr": "Français",
+            "de": "Français",
+            "es": "Français"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "Deutsch",
+            "fr": "Deutsch",
+            "de": "Deutsch",
+            "es": "Deutsch"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Español",
+            "fr": "Español",
+            "de": "Español",
+            "es": "Español"
+          }
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_connection",
+      "timeout_seconds": 60,
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
+      "description": {
+        "en": "Signs in to OilFox and reads the sensors of the account.",
+        "fr": "Se connecte à OilFox et lit les capteurs du compte.",
+        "de": "Meldet sich bei OilFox an und liest die Sensoren des Kontos.",
+        "es": "Se conecta a OilFox y lee los sensores de la cuenta."
+      }
+    },
+    {
+      "key": "diagnostic",
+      "timeout_seconds": 10,
+      "label": {
+        "en": "Diagnostic",
+        "fr": "Diagnostic",
+        "de": "Diagnose",
+        "es": "Diagnóstico"
+      },
+      "description": {
+        "en": "Writes what the integration knows to its logs (no password, no token), for an issue.",
+        "fr": "Écrit ce que sait l’intégration dans ses journaux (sans mot de passe ni jeton), pour un ticket.",
+        "de": "Schreibt, was die Integration weiß, in ihre Logs (ohne Passwort und Token), für ein Ticket.",
+        "es": "Escribe lo que sabe la integración en sus registros (sin contraseña ni token), para una incidencia."
+      }
+    }
+  ],
+  "widgets": [
+    {
+      "key": "overview",
+      "label": {
+        "en": "OilFox tanks",
+        "fr": "Cuves OilFox",
+        "de": "OilFox-Tanks",
+        "es": "Depósitos OilFox"
+      },
+      "description": {
+        "en": "Every tank: a gauge of its fill level, its quantity and days of reach, the problems first.",
+        "fr": "Toutes les cuves : une jauge du niveau, la quantité et l’autonomie, les problèmes d’abord.",
+        "de": "Alle Tanks: Füllstandsanzeige, Menge und Reichweite, Probleme zuerst.",
+        "es": "Todos los depósitos: indicador del nivel, cantidad y autonomía, los problemas primero."
+      },
+      "icon": "droplet"
+    },
+    {
+      "key": "tank",
+      "label": {
+        "en": "OilFox tank",
+        "fr": "Cuve OilFox",
+        "de": "OilFox-Tank",
+        "es": "Depósito OilFox"
+      },
+      "description": {
+        "en": "One tank: fill level, quantity, reach, battery, 90 days of level, empty day, use per day.",
+        "fr": "Une cuve : niveau, quantité, autonomie, pile, 90 jours de niveau, date de vide, conso par jour.",
+        "de": "Ein Tank: Füllstand, Menge, Reichweite, Batterie, 90 Tage Verlauf, Leerdatum, Verbrauch.",
+        "es": "Un depósito: nivel, cantidad, autonomía, pila, 90 días de nivel, fecha vacío, consumo diario."
+      },
+      "icon": "bar-chart-2",
+      "settings": [
+        {
+          "key": "tank",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Tank",
+            "fr": "Cuve",
+            "de": "Tank",
+            "es": "Depósito"
+          },
+          "description": {
+            "en": "An OilFox sensor. Leave empty for the first tank.",
+            "fr": "Un capteur OilFox. Laissez vide pour la première cuve.",
+            "de": "Ein OilFox-Sensor. Leer lassen für den ersten Tank.",
+            "es": "Un sensor OilFox. Déjelo vacío para el primer depósito."
+          }
+        }
+      ]
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "new_metering",
+      "label": {
+        "en": "OilFox: new measurement",
+        "fr": "OilFox : nouvelle mesure",
+        "de": "OilFox: neue Messung",
+        "es": "OilFox: nueva medición"
+      },
+      "description": {
+        "en": "OilFox measured the tank (about once a day).",
+        "fr": "OilFox a mesuré la cuve (environ une fois par jour).",
+        "de": "OilFox hat den Tank gemessen (etwa einmal am Tag).",
+        "es": "OilFox midió el depósito (aproximadamente una vez al día)."
+      },
+      "fields": [
+        {
+          "key": "tank",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Tank",
+            "fr": "Cuve",
+            "de": "Tank",
+            "es": "Depósito"
+          },
+          "description": {
+            "en": "An OilFox sensor. Leave empty for any tank.",
+            "fr": "Un capteur OilFox. Laissez vide pour n’importe quelle cuve.",
+            "de": "Ein OilFox-Sensor. Leer lassen für jeden Tank.",
+            "es": "Un sensor OilFox. Déjelo vacío para cualquier depósito."
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "tank",
+          "type": "string",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          }
+        },
+        {
+          "key": "tank_name",
+          "type": "string",
+          "label": {
+            "en": "Tank name",
+            "fr": "Nom de la cuve",
+            "de": "Name des Tanks",
+            "es": "Nombre del depósito"
+          }
+        },
+        {
+          "key": "hwid",
+          "type": "string",
+          "label": {
+            "en": "OilFox hardware id",
+            "fr": "Identifiant matériel OilFox",
+            "de": "OilFox-Hardware-ID",
+            "es": "Identificador de hardware OilFox"
+          }
+        },
+        {
+          "key": "fill_percent",
+          "type": "number",
+          "label": {
+            "en": "Fill level (%)",
+            "fr": "Niveau de remplissage (%)",
+            "de": "Füllstand (%)",
+            "es": "Nivel de llenado (%)"
+          }
+        },
+        {
+          "key": "quantity",
+          "type": "number",
+          "label": {
+            "en": "Quantity",
+            "fr": "Quantité",
+            "de": "Menge",
+            "es": "Cantidad"
+          }
+        },
+        {
+          "key": "unit",
+          "type": "string",
+          "label": {
+            "en": "Unit (L or kg)",
+            "fr": "Unité (L ou kg)",
+            "de": "Einheit (L oder kg)",
+            "es": "Unidad (L o kg)"
+          }
+        },
+        {
+          "key": "days_reach",
+          "type": "number",
+          "label": {
+            "en": "Days of reach",
+            "fr": "Autonomie (jours)",
+            "de": "Reichweite (Tage)",
+            "es": "Autonomía (días)"
+          }
+        },
+        {
+          "key": "battery_level",
+          "type": "string",
+          "label": {
+            "en": "Battery (FULL … CRITICAL)",
+            "fr": "Pile (FULL … CRITICAL)",
+            "de": "Batterie (FULL … CRITICAL)",
+            "es": "Pila (FULL … CRITICAL)"
+          }
+        },
+        {
+          "key": "consumed",
+          "type": "number",
+          "label": {
+            "en": "Used since the previous measurement",
+            "fr": "Consommé depuis la mesure précédente",
+            "de": "Verbraucht seit der vorigen Messung",
+            "es": "Consumido desde la medición anterior"
+          }
+        },
+        {
+          "key": "metering_at",
+          "type": "string",
+          "label": {
+            "en": "Measured at (ISO 8601)",
+            "fr": "Mesurée à (ISO 8601)",
+            "de": "Gemessen um (ISO 8601)",
+            "es": "Medida a las (ISO 8601)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "refill_detected",
+      "label": {
+        "en": "OilFox: refill detected",
+        "fr": "OilFox : remplissage détecté",
+        "de": "OilFox: Befüllung erkannt",
+        "es": "OilFox: relleno detectado"
+      },
+      "description": {
+        "en": "The fill level rose by 5 points or more between two measurements: a delivery.",
+        "fr": "Le niveau a monté de 5 points ou plus entre deux mesures : une livraison.",
+        "de": "Der Füllstand stieg zwischen zwei Messungen um 5 Punkte oder mehr: eine Lieferung.",
+        "es": "El nivel subió 5 puntos o más entre dos mediciones: una entrega."
+      },
+      "fields": [
+        {
+          "key": "tank",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Tank",
+            "fr": "Cuve",
+            "de": "Tank",
+            "es": "Depósito"
+          },
+          "description": {
+            "en": "An OilFox sensor. Leave empty for any tank.",
+            "fr": "Un capteur OilFox. Laissez vide pour n’importe quelle cuve.",
+            "de": "Ein OilFox-Sensor. Leer lassen für jeden Tank.",
+            "es": "Un sensor OilFox. Déjelo vacío para cualquier depósito."
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "tank",
+          "type": "string",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          }
+        },
+        {
+          "key": "tank_name",
+          "type": "string",
+          "label": {
+            "en": "Tank name",
+            "fr": "Nom de la cuve",
+            "de": "Name des Tanks",
+            "es": "Nombre del depósito"
+          }
+        },
+        {
+          "key": "hwid",
+          "type": "string",
+          "label": {
+            "en": "OilFox hardware id",
+            "fr": "Identifiant matériel OilFox",
+            "de": "OilFox-Hardware-ID",
+            "es": "Identificador de hardware OilFox"
+          }
+        },
+        {
+          "key": "before_percent",
+          "type": "number",
+          "label": {
+            "en": "Level before (%)",
+            "fr": "Niveau avant (%)",
+            "de": "Füllstand vorher (%)",
+            "es": "Nivel antes (%)"
+          }
+        },
+        {
+          "key": "after_percent",
+          "type": "number",
+          "label": {
+            "en": "Level after (%)",
+            "fr": "Niveau après (%)",
+            "de": "Füllstand nachher (%)",
+            "es": "Nivel después (%)"
+          }
+        },
+        {
+          "key": "added_quantity",
+          "type": "number",
+          "label": {
+            "en": "Quantity added",
+            "fr": "Quantité ajoutée",
+            "de": "Hinzugefügte Menge",
+            "es": "Cantidad añadida"
+          }
+        },
+        {
+          "key": "quantity",
+          "type": "number",
+          "label": {
+            "en": "Quantity",
+            "fr": "Quantité",
+            "de": "Menge",
+            "es": "Cantidad"
+          }
+        },
+        {
+          "key": "unit",
+          "type": "string",
+          "label": {
+            "en": "Unit (L or kg)",
+            "fr": "Unité (L ou kg)",
+            "de": "Einheit (L oder kg)",
+            "es": "Unidad (L o kg)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "measurement_error",
+      "label": {
+        "en": "OilFox: measurement problem",
+        "fr": "OilFox : problème de mesure",
+        "de": "OilFox: Messproblem",
+        "es": "OilFox: problema de medición"
+      },
+      "description": {
+        "en": "OilFox reports a problem of the measurement (tank settings, no level detected…).",
+        "fr": "OilFox signale un problème de mesure (réglages de la cuve, aucun niveau détecté…).",
+        "de": "OilFox meldet ein Messproblem (Tankeinstellungen, kein Füllstand erkannt…).",
+        "es": "OilFox informa de un problema de medición (ajustes del depósito, ningún nivel detectado…)."
+      },
+      "fields": [
+        {
+          "key": "tank",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Tank",
+            "fr": "Cuve",
+            "de": "Tank",
+            "es": "Depósito"
+          },
+          "description": {
+            "en": "An OilFox sensor. Leave empty for any tank.",
+            "fr": "Un capteur OilFox. Laissez vide pour n’importe quelle cuve.",
+            "de": "Ein OilFox-Sensor. Leer lassen für jeden Tank.",
+            "es": "Un sensor OilFox. Déjelo vacío para cualquier depósito."
+          }
+        },
+        {
+          "key": "error",
+          "type": "multi_select",
+          "required": false,
+          "label": {
+            "en": "Problems",
+            "fr": "Problèmes",
+            "de": "Probleme",
+            "es": "Problemas"
+          },
+          "description": {
+            "en": "Leave empty for any problem.",
+            "fr": "Laissez vide pour n’importe quel problème.",
+            "de": "Leer lassen für jedes Problem.",
+            "es": "Déjelo vacío para cualquier problema."
+          },
+          "options": [
+            {
+              "value": "NO_METERING",
+              "label": {
+                "en": "No measurement yet",
+                "fr": "Pas encore de mesure",
+                "de": "Noch keine Messung",
+                "es": "Todavía sin medición"
+              }
+            },
+            {
+              "value": "EMPTY_METERING",
+              "label": {
+                "en": "Incorrect measurement",
+                "fr": "Mesure incorrecte",
+                "de": "Fehlerhafte Messung",
+                "es": "Medición incorrecta"
+              }
+            },
+            {
+              "value": "NO_EXTRACTED_VALUE",
+              "label": {
+                "en": "No fill level detected",
+                "fr": "Aucun niveau détecté",
+                "de": "Kein Füllstand erkannt",
+                "es": "Ningún nivel detectado"
+              }
+            },
+            {
+              "value": "SENSOR_CONFIG",
+              "label": {
+                "en": "Faulty measurement",
+                "fr": "Mesure défectueuse",
+                "de": "Fehlerhafte Messung (Sensor)",
+                "es": "Medición defectuosa"
+              }
+            },
+            {
+              "value": "MISSING_STORAGE_CONFIG",
+              "label": {
+                "en": "Tank settings missing",
+                "fr": "Réglages de la cuve manquants",
+                "de": "Tankeinstellungen fehlen",
+                "es": "Faltan los ajustes del depósito"
+              }
+            },
+            {
+              "value": "INVALID_STORAGE_CONFIG",
+              "label": {
+                "en": "Incorrect tank settings",
+                "fr": "Réglages de la cuve incorrects",
+                "de": "Falsche Tankeinstellungen",
+                "es": "Ajustes del depósito incorrectos"
+              }
+            },
+            {
+              "value": "DISTANCE_TOO_SHORT",
+              "label": {
+                "en": "Measured distance too small",
+                "fr": "Distance mesurée trop courte",
+                "de": "Gemessener Abstand zu klein",
+                "es": "Distancia medida demasiado corta"
+              }
+            },
+            {
+              "value": "ABOVE_STORAGE_MAX",
+              "label": {
+                "en": "Tank full (above its maximum)",
+                "fr": "Cuve pleine (au-dessus du maximum)",
+                "de": "Tank voll (über dem Maximum)",
+                "es": "Depósito lleno (por encima del máximo)"
+              }
+            },
+            {
+              "value": "BELOW_STORAGE_MIN",
+              "label": {
+                "en": "Implausible fill level",
+                "fr": "Niveau calculé peu plausible",
+                "de": "Unplausibler Füllstand",
+                "es": "Nivel calculado poco plausible"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "tank",
+          "type": "string",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          }
+        },
+        {
+          "key": "tank_name",
+          "type": "string",
+          "label": {
+            "en": "Tank name",
+            "fr": "Nom de la cuve",
+            "de": "Name des Tanks",
+            "es": "Nombre del depósito"
+          }
+        },
+        {
+          "key": "hwid",
+          "type": "string",
+          "label": {
+            "en": "OilFox hardware id",
+            "fr": "Identifiant matériel OilFox",
+            "de": "OilFox-Hardware-ID",
+            "es": "Identificador de hardware OilFox"
+          }
+        },
+        {
+          "key": "error",
+          "type": "string",
+          "label": {
+            "en": "Problem (code)",
+            "fr": "Problème (code)",
+            "de": "Problem (Code)",
+            "es": "Problema (código)"
+          }
+        },
+        {
+          "key": "error_label",
+          "type": "string",
+          "label": {
+            "en": "Problem",
+            "fr": "Problème",
+            "de": "Problem",
+            "es": "Problema"
+          }
+        }
+      ]
+    },
+    {
+      "key": "measurement_ok",
+      "label": {
+        "en": "OilFox: measurement OK again",
+        "fr": "OilFox : mesure de nouveau correcte",
+        "de": "OilFox: Messung wieder in Ordnung",
+        "es": "OilFox: medición correcta de nuevo"
+      },
+      "description": {
+        "en": "The problem of the measurement is gone.",
+        "fr": "Le problème de mesure a disparu.",
+        "de": "Das Messproblem ist behoben.",
+        "es": "El problema de medición ha desaparecido."
+      },
+      "fields": [
+        {
+          "key": "tank",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Tank",
+            "fr": "Cuve",
+            "de": "Tank",
+            "es": "Depósito"
+          },
+          "description": {
+            "en": "An OilFox sensor. Leave empty for any tank.",
+            "fr": "Un capteur OilFox. Laissez vide pour n’importe quelle cuve.",
+            "de": "Ein OilFox-Sensor. Leer lassen für jeden Tank.",
+            "es": "Un sensor OilFox. Déjelo vacío para cualquier depósito."
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "tank",
+          "type": "string",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          }
+        },
+        {
+          "key": "tank_name",
+          "type": "string",
+          "label": {
+            "en": "Tank name",
+            "fr": "Nom de la cuve",
+            "de": "Name des Tanks",
+            "es": "Nombre del depósito"
+          }
+        },
+        {
+          "key": "hwid",
+          "type": "string",
+          "label": {
+            "en": "OilFox hardware id",
+            "fr": "Identifiant matériel OilFox",
+            "de": "OilFox-Hardware-ID",
+            "es": "Identificador de hardware OilFox"
+          }
+        }
+      ]
+    },
+    {
+      "key": "sensor_silent",
+      "label": {
+        "en": "OilFox: measurement late",
+        "fr": "OilFox : mesure en retard",
+        "de": "OilFox: Messung verspätet",
+        "es": "OilFox: medición con retraso"
+      },
+      "description": {
+        "en": "The measurement planned by OilFox is 24 hours late (battery, Wi-Fi…).",
+        "fr": "La mesure prévue par OilFox a 24 heures de retard (pile, Wi-Fi…).",
+        "de": "Die von OilFox geplante Messung ist 24 Stunden verspätet (Batterie, WLAN…).",
+        "es": "La medición prevista por OilFox lleva 24 horas de retraso (pila, Wi-Fi…)."
+      },
+      "fields": [
+        {
+          "key": "tank",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Tank",
+            "fr": "Cuve",
+            "de": "Tank",
+            "es": "Depósito"
+          },
+          "description": {
+            "en": "An OilFox sensor. Leave empty for any tank.",
+            "fr": "Un capteur OilFox. Laissez vide pour n’importe quelle cuve.",
+            "de": "Ein OilFox-Sensor. Leer lassen für jeden Tank.",
+            "es": "Un sensor OilFox. Déjelo vacío para cualquier depósito."
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "tank",
+          "type": "string",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          }
+        },
+        {
+          "key": "tank_name",
+          "type": "string",
+          "label": {
+            "en": "Tank name",
+            "fr": "Nom de la cuve",
+            "de": "Name des Tanks",
+            "es": "Nombre del depósito"
+          }
+        },
+        {
+          "key": "hwid",
+          "type": "string",
+          "label": {
+            "en": "OilFox hardware id",
+            "fr": "Identifiant matériel OilFox",
+            "de": "OilFox-Hardware-ID",
+            "es": "Identificador de hardware OilFox"
+          }
+        },
+        {
+          "key": "expected_at",
+          "type": "string",
+          "label": {
+            "en": "Expected at (ISO 8601)",
+            "fr": "Attendue à (ISO 8601)",
+            "de": "Erwartet um (ISO 8601)",
+            "es": "Esperada a las (ISO 8601)"
+          }
+        },
+        {
+          "key": "hours_late",
+          "type": "number",
+          "label": {
+            "en": "Hours late",
+            "fr": "Heures de retard",
+            "de": "Stunden Verspätung",
+            "es": "Horas de retraso"
+          }
+        }
+      ]
+    },
+    {
+      "key": "sensor_back",
+      "label": {
+        "en": "OilFox: measurements back",
+        "fr": "OilFox : mesures de retour",
+        "de": "OilFox: Messungen wieder da",
+        "es": "OilFox: mediciones de vuelta"
+      },
+      "description": {
+        "en": "A late sensor measures again.",
+        "fr": "Un capteur en retard mesure de nouveau.",
+        "de": "Ein verspäteter Sensor misst wieder.",
+        "es": "Un sensor con retraso vuelve a medir."
+      },
+      "fields": [
+        {
+          "key": "tank",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Tank",
+            "fr": "Cuve",
+            "de": "Tank",
+            "es": "Depósito"
+          },
+          "description": {
+            "en": "An OilFox sensor. Leave empty for any tank.",
+            "fr": "Un capteur OilFox. Laissez vide pour n’importe quelle cuve.",
+            "de": "Ein OilFox-Sensor. Leer lassen für jeden Tank.",
+            "es": "Un sensor OilFox. Déjelo vacío para cualquier depósito."
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "tank",
+          "type": "string",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          }
+        },
+        {
+          "key": "tank_name",
+          "type": "string",
+          "label": {
+            "en": "Tank name",
+            "fr": "Nom de la cuve",
+            "de": "Name des Tanks",
+            "es": "Nombre del depósito"
+          }
+        },
+        {
+          "key": "hwid",
+          "type": "string",
+          "label": {
+            "en": "OilFox hardware id",
+            "fr": "Identifiant matériel OilFox",
+            "de": "OilFox-Hardware-ID",
+            "es": "Identificador de hardware OilFox"
+          }
+        }
+      ]
+    },
+    {
+      "key": "access_refused",
+      "label": {
+        "en": "OilFox: access refused",
+        "fr": "OilFox : accès refusé",
+        "de": "OilFox: Zugriff verweigert",
+        "es": "OilFox: acceso denegado"
+      },
+      "description": {
+        "en": "OilFox refuses the e-mail, the password or the tokens.",
+        "fr": "OilFox refuse l’e-mail, le mot de passe ou les jetons.",
+        "de": "OilFox lehnt E-Mail, Passwort oder Tokens ab.",
+        "es": "OilFox rechaza el correo, la contraseña o los tokens."
+      },
+      "variables": [
+        {
+          "key": "reason",
+          "type": "string",
+          "label": {
+            "en": "Reason (refused, unknown_account, token)",
+            "fr": "Raison (refused, unknown_account, token)",
+            "de": "Grund (refused, unknown_account, token)",
+            "es": "Motivo (refused, unknown_account, token)"
+          }
+        },
+        {
+          "key": "message",
+          "type": "string",
+          "label": {
+            "en": "Message",
+            "fr": "Message",
+            "de": "Nachricht",
+            "es": "Mensaje"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "get_tank",
+      "timeout_seconds": 10,
+      "label": {
+        "en": "OilFox: values of a tank",
+        "fr": "OilFox : valeurs d’une cuve",
+        "de": "OilFox: Werte eines Tanks",
+        "es": "OilFox: valores de un depósito"
+      },
+      "description": {
+        "en": "The last values of a tank (no request): for a message or a condition.",
+        "fr": "Les dernières valeurs d’une cuve (sans requête) : pour un message ou une condition.",
+        "de": "Die letzten Werte eines Tanks (ohne Anfrage): für eine Nachricht oder Bedingung.",
+        "es": "Los últimos valores de un depósito (sin petición): para un mensaje o una condición."
+      },
+      "fields": [
+        {
+          "key": "tank",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": {
+            "en": "Tank",
+            "fr": "Cuve",
+            "de": "Tank",
+            "es": "Depósito"
+          },
+          "description": {
+            "en": "An OilFox sensor. Leave empty for the first tank.",
+            "fr": "Un capteur OilFox. Laissez vide pour la première cuve.",
+            "de": "Ein OilFox-Sensor. Leer lassen für den ersten Tank.",
+            "es": "Un sensor OilFox. Déjelo vacío para el primer depósito."
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "key": "tank_name",
+          "type": "string",
+          "label": {
+            "en": "Tank name",
+            "fr": "Nom de la cuve",
+            "de": "Name des Tanks",
+            "es": "Nombre del depósito"
+          }
+        },
+        {
+          "key": "fill_percent",
+          "type": "number",
+          "label": {
+            "en": "Fill level (%)",
+            "fr": "Niveau de remplissage (%)",
+            "de": "Füllstand (%)",
+            "es": "Nivel de llenado (%)"
+          }
+        },
+        {
+          "key": "quantity",
+          "type": "number",
+          "label": {
+            "en": "Quantity",
+            "fr": "Quantité",
+            "de": "Menge",
+            "es": "Cantidad"
+          }
+        },
+        {
+          "key": "unit",
+          "type": "string",
+          "label": {
+            "en": "Unit (L or kg)",
+            "fr": "Unité (L ou kg)",
+            "de": "Einheit (L oder kg)",
+            "es": "Unidad (L o kg)"
+          }
+        },
+        {
+          "key": "days_reach",
+          "type": "number",
+          "label": {
+            "en": "Days of reach",
+            "fr": "Autonomie (jours)",
+            "de": "Reichweite (Tage)",
+            "es": "Autonomía (días)"
+          }
+        },
+        {
+          "key": "empty_date",
+          "type": "string",
+          "label": {
+            "en": "Estimated empty day (YYYY-MM-DD)",
+            "fr": "Date de vide estimée (AAAA-MM-JJ)",
+            "de": "Geschätztes Leerdatum (JJJJ-MM-TT)",
+            "es": "Fecha estimada de vacío (AAAA-MM-DD)"
+          }
+        },
+        {
+          "key": "daily_consumption",
+          "type": "number",
+          "label": {
+            "en": "Use per day, 30-day average",
+            "fr": "Consommation par jour, moyenne 30 j",
+            "de": "Verbrauch pro Tag, Ø 30 Tage",
+            "es": "Consumo diario, media de 30 días"
+          }
+        },
+        {
+          "key": "battery_level",
+          "type": "string",
+          "label": {
+            "en": "Battery (FULL … CRITICAL)",
+            "fr": "Pile (FULL … CRITICAL)",
+            "de": "Batterie (FULL … CRITICAL)",
+            "es": "Pila (FULL … CRITICAL)"
+          }
+        },
+        {
+          "key": "battery_percent",
+          "type": "number",
+          "label": {
+            "en": "Battery (approx. %)",
+            "fr": "Pile (% approx.)",
+            "de": "Batterie (ca. %)",
+            "es": "Pila (% aprox.)"
+          }
+        },
+        {
+          "key": "measurement_error",
+          "type": "string",
+          "label": {
+            "en": "Measurement problem (code, empty if none)",
+            "fr": "Problème de mesure (code, vide sinon)",
+            "de": "Messproblem (Code, leer wenn keins)",
+            "es": "Problema de medición (código, vacío si no hay)"
+          }
+        },
+        {
+          "key": "measurement_error_label",
+          "type": "string",
+          "label": {
+            "en": "Measurement problem",
+            "fr": "Problème de mesure",
+            "de": "Messproblem",
+            "es": "Problema de medición"
+          }
+        },
+        {
+          "key": "last_metering",
+          "type": "string",
+          "label": {
+            "en": "Last measurement (ISO 8601)",
+            "fr": "Dernière mesure (ISO 8601)",
+            "de": "Letzte Messung (ISO 8601)",
+            "es": "Última medición (ISO 8601)"
+          }
+        },
+        {
+          "key": "next_metering",
+          "type": "string",
+          "label": {
+            "en": "Next measurement (ISO 8601)",
+            "fr": "Prochaine mesure (ISO 8601)",
+            "de": "Nächste Messung (ISO 8601)",
+            "es": "Próxima medición (ISO 8601)"
+          }
+        },
+        {
+          "key": "is_silent",
+          "type": "boolean",
+          "label": {
+            "en": "Measurement late",
+            "fr": "Mesure en retard",
+            "de": "Messung verspätet",
+            "es": "Medición con retraso"
+          }
+        },
+        {
+          "key": "summary",
+          "type": "string",
+          "label": {
+            "en": "Summary",
+            "fr": "Résumé",
+            "de": "Zusammenfassung",
+            "es": "Resumen"
+          }
+        }
+      ]
+    }
+  ]
+}

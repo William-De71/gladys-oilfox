@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="534" viewBox="0 0 800 534">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2a3a"/>
+      <stop offset="1" stop-color="#2e4a63"/>
+    </linearGradient>
+    <linearGradient id="tank" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c9d3dc"/>
+      <stop offset="0.5" stop-color="#f4f7fa"/>
+      <stop offset="1" stop-color="#b7c3ce"/>
+    </linearGradient>
+    <linearGradient id="oil" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f2b33d"/>
+      <stop offset="1" stop-color="#c9771a"/>
+    </linearGradient>
+    <clipPath id="inside"><rect x="300" y="250" width="240" height="210" rx="34"/></clipPath>
+  </defs>
+  <rect width="800" height="534" fill="url(#sky)"/>
+  <!-- the cloud -->
+  <g transform="translate(640 110)" fill="#e8f1fb" opacity="0.95">
+    <circle cx="-44" cy="10" r="34"/>
+    <circle cx="0" cy="-10" r="46"/>
+    <circle cx="50" cy="8" r="36"/>
+    <rect x="-78" y="8" width="164" height="38" rx="19"/>
+  </g>
+  <!-- the floor -->
+  <rect x="0" y="476" width="800" height="58" fill="#13202d"/>
+  <!-- the tank, filled at 61 % -->
+  <rect x="300" y="250" width="240" height="210" rx="34" fill="url(#tank)"/>
+  <g clip-path="url(#inside)">
+    <rect x="300" y="332" width="240" height="140" fill="url(#oil)"/>
+    <path d="M300 332 C340 322 380 342 420 332 C460 322 500 342 540 332 V340 H300 Z" fill="#f7c968"/>
+  </g>
+  <rect x="300" y="250" width="240" height="210" rx="34" fill="none" stroke="#8796a5" stroke-width="3"/>
+  <rect x="330" y="460" width="24" height="18" fill="#8796a5"/>
+  <rect x="486" y="460" width="24" height="18" fill="#8796a5"/>
+  <!-- the sensor on top, its ultrasonic waves down and its link up -->
+  <rect x="384" y="214" width="72" height="40" rx="12" fill="#f4f7fa" stroke="#8796a5" stroke-width="2"/>
+  <circle cx="420" cy="234" r="7" fill="#f28c28"/>
+  <g stroke="#ffffff" stroke-width="3" fill="none" opacity="0.7" stroke-linecap="round">
+    <path d="M404 272 C412 280 428 280 436 272"/>
+    <path d="M396 290 C410 304 430 304 444 290"/>
+  </g>
+  <g stroke="#7fc4ff" stroke-width="5" fill="none" stroke-dasharray="12 9" stroke-linecap="round">
+    <path d="M440 214 C480 170 540 140 584 130"/>
+  </g>
+  <!-- the readings -->
+  <g font-family="DejaVu Sans, Arial, sans-serif" font-weight="bold">
+    <rect x="590" y="262" width="176" height="62" rx="14" fill="#ffffff" opacity="0.12"/>
+    <text x="610" y="306" font-size="34" fill="#f7c968">61 %</text>
+    <rect x="590" y="338" width="176" height="62" rx="14" fill="#ffffff" opacity="0.12"/>
+    <text x="610" y="382" font-size="34" fill="#7fd0ff">97 days</text>
+  </g>
+  <g font-family="DejaVu Sans, Arial, sans-serif" fill="#ffffff">
+    <text x="40" y="96" font-size="64" font-weight="bold">OilFox</text>
+    <text x="42" y="142" font-size="28">for Gladys Assistant</text>
+    <text x="42" y="182" font-size="20" fill="#cfe3f5">fill level · quantity · reach · refills</text>
+  </g>
+</svg>

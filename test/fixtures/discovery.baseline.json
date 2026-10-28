@@ -1,0 +1,516 @@
+{
+  "devices": {
+    "tank_liters": {
+      "external_id": "ext:test-integration:tank:ON0987654321",
+      "should_poll": false,
+      "params": ["OILFOX_HWID"],
+      "features": [
+        {
+          "external_id": "ext:test-integration:tank:ON0987654321:fill_level",
+          "category": "level-sensor",
+          "type": "liquid-level-percent",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:tank:ON0987654321:quantity",
+          "category": "volume-sensor",
+          "type": "integer",
+          "unit": "liter",
+          "min": 0,
+          "max": 100000,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:tank:ON0987654321:days_reach",
+          "category": "duration",
+          "type": "integer",
+          "unit": "days",
+          "min": 0,
+          "max": 3650,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:tank:ON0987654321:battery",
+          "category": "battery",
+          "type": "integer",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:tank:ON0987654321:status",
+          "category": "text",
+          "type": "text",
+          "unit": null,
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": false
+        }
+      ]
+    },
+    "tank_kg": {
+      "external_id": "ext:test-integration:tank:ON0555000111",
+      "should_poll": false,
+      "params": ["OILFOX_HWID"],
+      "features": [
+        {
+          "external_id": "ext:test-integration:tank:ON0555000111:fill_level",
+          "category": "level-sensor",
+          "type": "liquid-level-percent",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:tank:ON0555000111:quantity",
+          "category": "counter-sensor",
+          "type": "integer",
+          "unit": null,
+          "min": 0,
+          "max": 100000,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:tank:ON0555000111:days_reach",
+          "category": "duration",
+          "type": "integer",
+          "unit": "days",
+          "min": 0,
+          "max": 3650,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:tank:ON0555000111:battery",
+          "category": "battery",
+          "type": "integer",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:tank:ON0555000111:status",
+          "category": "text",
+          "type": "text",
+          "unit": null,
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": false
+        }
+      ]
+    },
+    "tank_unmeasured": {
+      "external_id": "ext:test-integration:tank:ON0123456789",
+      "should_poll": false,
+      "params": ["OILFOX_HWID"],
+      "features": [
+        {
+          "external_id": "ext:test-integration:tank:ON0123456789:fill_level",
+          "category": "level-sensor",
+          "type": "liquid-level-percent",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:tank:ON0123456789:quantity",
+          "category": "volume-sensor",
+          "type": "integer",
+          "unit": "liter",
+          "min": 0,
+          "max": 100000,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:tank:ON0123456789:days_reach",
+          "category": "duration",
+          "type": "integer",
+          "unit": "days",
+          "min": 0,
+          "max": 3650,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:tank:ON0123456789:battery",
+          "category": "battery",
+          "type": "integer",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:test-integration:tank:ON0123456789:status",
+          "category": "text",
+          "type": "text",
+          "unit": null,
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": false
+        }
+      ]
+    }
+  },
+  "manifest": {
+    "config_schema": [
+      {
+        "key": "intro",
+        "type": "section"
+      },
+      {
+        "key": "email",
+        "type": "string"
+      },
+      {
+        "key": "password",
+        "type": "secret"
+      },
+      {
+        "key": "readings",
+        "type": "section"
+      },
+      {
+        "key": "language",
+        "type": "select"
+      }
+    ],
+    "actions": ["test_connection", "diagnostic"],
+    "action_fields": {
+      "test_connection": [],
+      "diagnostic": []
+    },
+    "widgets": [
+      {
+        "key": "overview",
+        "settings": [],
+        "options": {}
+      },
+      {
+        "key": "tank",
+        "settings": ["tank"],
+        "options": {}
+      }
+    ],
+    "scene_triggers": [
+      {
+        "key": "new_metering",
+        "fields": [
+          {
+            "key": "tank",
+            "options": []
+          }
+        ],
+        "variables": [
+          {
+            "key": "tank",
+            "type": "string"
+          },
+          {
+            "key": "tank_name",
+            "type": "string"
+          },
+          {
+            "key": "hwid",
+            "type": "string"
+          },
+          {
+            "key": "fill_percent",
+            "type": "number"
+          },
+          {
+            "key": "quantity",
+            "type": "number"
+          },
+          {
+            "key": "unit",
+            "type": "string"
+          },
+          {
+            "key": "days_reach",
+            "type": "number"
+          },
+          {
+            "key": "battery_level",
+            "type": "string"
+          },
+          {
+            "key": "consumed",
+            "type": "number"
+          },
+          {
+            "key": "metering_at",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "refill_detected",
+        "fields": [
+          {
+            "key": "tank",
+            "options": []
+          }
+        ],
+        "variables": [
+          {
+            "key": "tank",
+            "type": "string"
+          },
+          {
+            "key": "tank_name",
+            "type": "string"
+          },
+          {
+            "key": "hwid",
+            "type": "string"
+          },
+          {
+            "key": "before_percent",
+            "type": "number"
+          },
+          {
+            "key": "after_percent",
+            "type": "number"
+          },
+          {
+            "key": "added_quantity",
+            "type": "number"
+          },
+          {
+            "key": "quantity",
+            "type": "number"
+          },
+          {
+            "key": "unit",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "measurement_error",
+        "fields": [
+          {
+            "key": "tank",
+            "options": []
+          },
+          {
+            "key": "error",
+            "options": [
+              "NO_METERING",
+              "EMPTY_METERING",
+              "NO_EXTRACTED_VALUE",
+              "SENSOR_CONFIG",
+              "MISSING_STORAGE_CONFIG",
+              "INVALID_STORAGE_CONFIG",
+              "DISTANCE_TOO_SHORT",
+              "ABOVE_STORAGE_MAX",
+              "BELOW_STORAGE_MIN"
+            ]
+          }
+        ],
+        "variables": [
+          {
+            "key": "tank",
+            "type": "string"
+          },
+          {
+            "key": "tank_name",
+            "type": "string"
+          },
+          {
+            "key": "hwid",
+            "type": "string"
+          },
+          {
+            "key": "error",
+            "type": "string"
+          },
+          {
+            "key": "error_label",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "measurement_ok",
+        "fields": [
+          {
+            "key": "tank",
+            "options": []
+          }
+        ],
+        "variables": [
+          {
+            "key": "tank",
+            "type": "string"
+          },
+          {
+            "key": "tank_name",
+            "type": "string"
+          },
+          {
+            "key": "hwid",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "sensor_silent",
+        "fields": [
+          {
+            "key": "tank",
+            "options": []
+          }
+        ],
+        "variables": [
+          {
+            "key": "tank",
+            "type": "string"
+          },
+          {
+            "key": "tank_name",
+            "type": "string"
+          },
+          {
+            "key": "hwid",
+            "type": "string"
+          },
+          {
+            "key": "expected_at",
+            "type": "string"
+          },
+          {
+            "key": "hours_late",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "key": "sensor_back",
+        "fields": [
+          {
+            "key": "tank",
+            "options": []
+          }
+        ],
+        "variables": [
+          {
+            "key": "tank",
+            "type": "string"
+          },
+          {
+            "key": "tank_name",
+            "type": "string"
+          },
+          {
+            "key": "hwid",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "access_refused",
+        "fields": [],
+        "variables": [
+          {
+            "key": "reason",
+            "type": "string"
+          },
+          {
+            "key": "message",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "scene_actions": [
+      {
+        "key": "get_tank",
+        "fields": ["tank"],
+        "outputs": [
+          {
+            "key": "tank_name",
+            "type": "string"
+          },
+          {
+            "key": "fill_percent",
+            "type": "number"
+          },
+          {
+            "key": "quantity",
+            "type": "number"
+          },
+          {
+            "key": "unit",
+            "type": "string"
+          },
+          {
+            "key": "days_reach",
+            "type": "number"
+          },
+          {
+            "key": "empty_date",
+            "type": "string"
+          },
+          {
+            "key": "daily_consumption",
+            "type": "number"
+          },
+          {
+            "key": "battery_level",
+            "type": "string"
+          },
+          {
+            "key": "battery_percent",
+            "type": "number"
+          },
+          {
+            "key": "measurement_error",
+            "type": "string"
+          },
+          {
+            "key": "measurement_error_label",
+            "type": "string"
+          },
+          {
+            "key": "last_metering",
+            "type": "string"
+          },
+          {
+            "key": "next_metering",
+            "type": "string"
+          },
+          {
+            "key": "is_silent",
+            "type": "boolean"
+          },
+          {
+            "key": "summary",
+            "type": "string"
+          }
+        ]
+      }
+    ]
+  }
+}
